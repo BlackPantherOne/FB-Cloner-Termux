@@ -15,13 +15,13 @@ def banner():
     clear()
     print(CYAN + "="*60)
     print("  █████▒▒ FAKE FB CLONER v1.0 ▒▒█████")
-    print("       Coded by: YourName | For Education Only")
+    print("       Coded by: RedRoom | For Education Only")
     print("="*60 + RESET)
-    print("""
+    print(f"""
 [1] Start Cloning
 [2] View Successful Clones
-[3] Select SIM Provider
-[4] Select Country
+[3] Select SIM Provider  (Current: {sim_choice})
+[4] Select Country       (Current: {country_choice})
 [5] About Tool
 [6] Clear Saved Results
 [7] Exit
@@ -37,18 +37,30 @@ def select_sim():
     print("\nAvailable SIMs:")
     for i, sim in enumerate(sim_list, 1):
         print(f"[{i}] {sim}")
-    choice = int(input("Select SIM number: "))
-    sim_choice = sim_list[choice - 1]
-    print(f"Selected SIM: {sim_choice}")
+    try:
+        choice = int(input("Select SIM number: "))
+        if 1 <= choice <= len(sim_list):
+            sim_choice = sim_list[choice - 1]
+            print(f"Selected SIM: {sim_choice}")
+        else:
+            print(RED + "Invalid SIM selection." + RESET)
+    except ValueError:
+        print(RED + "Please enter a valid number." + RESET)
 
 def select_country():
     global country_choice
     print("\nAvailable Countries:")
     for i, country in enumerate(country_list, 1):
         print(f"[{i}] {country}")
-    choice = int(input("Select Country number: "))
-    country_choice = country_list[choice - 1]
-    print(f"Selected Country: {country_choice}")
+    try:
+        choice = int(input("Select Country number: "))
+        if 1 <= choice <= len(country_list):
+            country_choice = country_list[choice - 1]
+            print(f"Selected Country: {country_choice}")
+        else:
+            print(RED + "Invalid country selection." + RESET)
+    except ValueError:
+        print(RED + "Please enter a valid number." + RESET)
 
 def show_progress_bar(percent):
     bar_length = 40
@@ -58,20 +70,10 @@ def show_progress_bar(percent):
 
 def start_cloning():
     ids = []
-    print("\nEnter FB ID|pass (type 'done' to finish or 'demo' for 50 demo IDs):")
-    while True:
-        entry = input(">> ")
-        if entry.lower() == 'done':
-            break
-        elif entry.lower() == 'demo':
-            for i in range(50):
-                ids.append(f"10000{random.randint(11111111, 99999999)}|pass{random.randint(100,999)}")
-            print(f"{YELLOW}[+] 50 Demo IDs Loaded!{RESET}")
-            break
-        elif '|' in entry:
-            ids.append(entry.strip())
-        else:
-            print(RED + "Invalid format. Use: 1000111222333|password" + RESET)
+    print(YELLOW + "\n[+] Auto-generating 50 demo FB IDs..." + RESET)
+    for i in range(50):
+        ids.append(f"10000{random.randint(11111111, 99999999)}|pass{random.randint(100,999)}")
+    print(f"{YELLOW}[+] 50 Demo IDs Loaded Automatically!{RESET}")
 
     print(CYAN + "\nCloning started...\n" + RESET)
     results = []
@@ -79,11 +81,10 @@ def start_cloning():
         fb_id, fb_pass = data.split('|')
         print(f"{YELLOW}[{i+1}] Cloning {fb_id}..." + RESET)
         
-        # Simulated loading
-        for p in range(0, 101, 10):
+        for p in range(0, 101, 5):
             show_progress_bar(p)
-            time.sleep(0.1)
-        print()  # Newline after progress bar
+            time.sleep(random.uniform(0.3, 0.5))  # Simulate longer cloning
+        print()
 
         status = random.choice(["Success", "Failed", "Already Cloned", "Try Again"])
         if status == "Success":
@@ -104,11 +105,14 @@ def start_cloning():
 
 def view_results():
     print("\nSaved Successful Clones:\n")
-    try:
+    if os.path.exists("cloned_success.txt"):
         with open("cloned_success.txt", "r") as f:
-            for line in f.readlines():
-                print(line.strip())
-    except FileNotFoundError:
+            data = f.read().strip()
+            if data:
+                print(data)
+            else:
+                print("No results to show.")
+    else:
         print("No results found.")
 
 def clear_results():
@@ -118,8 +122,10 @@ def clear_results():
 # MAIN MENU LOOP
 while True:
     banner()
-    opt = input("Select option [1-7]: ")
-    if opt == '1':
+    opt = input("Select option [1-7]: ").strip()
+    if not opt:
+        print(RED + "Please enter a valid option number (1-7)." + RESET)
+    elif opt == '1':
         start_cloning()
     elif opt == '2':
         view_results()
@@ -128,12 +134,12 @@ while True:
     elif opt == '4':
         select_country()
     elif opt == '5':
-        print("\nFake FB Cloner v1.0\nMade for fun/testing.\nNot real hacking tool.")
+        print(YELLOW + "\nFake FB Cloner v1.0\nThis is a simulation tool for educational use only.\nIt does NOT hack or access any real accounts.\n" + RESET)
     elif opt == '6':
         clear_results()
     elif opt == '7':
         print("Exiting... Bye.")
         break
     else:
-        print("Invalid choice.")
+        print(RED + "Invalid choice." + RESET)
     input("\nPress Enter to return to menu...")
