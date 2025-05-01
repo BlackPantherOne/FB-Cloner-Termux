@@ -50,37 +50,57 @@ def select_country():
     country_choice = country_list[choice - 1]
     print(f"Selected Country: {country_choice}")
 
+def show_progress_bar(percent):
+    bar_length = 40
+    filled_length = int(bar_length * percent // 100)
+    bar = '█' * filled_length + '-' * (bar_length - filled_length)
+    print(f"\r   [{bar}] {percent}%", end='', flush=True)
+
 def start_cloning():
     ids = []
-    print("\nEnter FB ID|pass (type 'done' to finish):")
+    print("\nEnter FB ID|pass (type 'done' to finish or 'demo' for 50 demo IDs):")
     while True:
         entry = input(">> ")
         if entry.lower() == 'done':
             break
-        if '|' in entry:
+        elif entry.lower() == 'demo':
+            for i in range(50):
+                ids.append(f"10000{random.randint(11111111, 99999999)}|pass{random.randint(100,999)}")
+            print(f"{YELLOW}[+] 50 Demo IDs Loaded!{RESET}")
+            break
+        elif '|' in entry:
             ids.append(entry.strip())
         else:
-            print("Invalid format.")
+            print(RED + "Invalid format. Use: 1000111222333|password" + RESET)
 
-    print("\nCloning started...\n")
+    print(CYAN + "\nCloning started...\n" + RESET)
     results = []
     for i, data in enumerate(ids):
         fb_id, fb_pass = data.split('|')
-        print(f"[{i+1}] Cloning {fb_id}...", end=" ", flush=True)
-        time.sleep(random.uniform(0.4, 0.9))
+        print(f"{YELLOW}[{i+1}] Cloning {fb_id}..." + RESET)
+        
+        # Simulated loading
+        for p in range(0, 101, 10):
+            show_progress_bar(p)
+            time.sleep(0.1)
+        print()  # Newline after progress bar
+
         status = random.choice(["Success", "Failed", "Already Cloned", "Try Again"])
         if status == "Success":
-            print(GREEN + "✓ Success" + RESET)
+            print(GREEN + f"   ✓ Success | {fb_id} | {fb_pass}" + RESET)
             result = f"{sim_choice} | {country_choice} | {fb_id} | {fb_pass}"
             results.append(result)
         else:
-            print(RED + f"× {status}" + RESET)
+            print(RED + f"   × {status} | ID: {fb_id}" + RESET)
+        print("-" * 50)
 
     if results:
         with open("cloned_success.txt", "a") as f:
             for r in results:
                 f.write(r + "\n")
         print(GREEN + f"\n[✓] {len(results)} IDs saved to cloned_success.txt" + RESET)
+    else:
+        print(RED + "\n[×] No successful clones." + RESET)
 
 def view_results():
     print("\nSaved Successful Clones:\n")
