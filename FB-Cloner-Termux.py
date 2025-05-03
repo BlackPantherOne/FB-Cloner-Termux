@@ -11,7 +11,7 @@ CYAN = '\033[96m'
 RESET = '\033[0m'
 
 # Predefined credentials
-USER_CREDENTIALS = {'username': 'admin', 'password': 'password123'}
+USER_CREDENTIALS = {'username': 'admin', 'password': 'passw'}
 
 # SIMs and Countries
 sim_list = ["Grameenphone", "Robi", "Jio", "Airtel", "Banglalink"]
