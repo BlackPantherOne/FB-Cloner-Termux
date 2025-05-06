@@ -104,7 +104,7 @@ def get_show_label(fb_id):
 
 def start_cloning():
     ids = ["61572800315891", "10001234567890", "10007894561234"]
-    passwords = ["Ryan981@"]
+    passwords = ["009827227"]
     results = []
 
     for i, fb_id in enumerate(ids):
